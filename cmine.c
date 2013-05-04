@@ -26,8 +26,8 @@
 
 #define CLEN 62
 #define CHR(x) cl[x % CLEN]
-// #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
-#define MASK(x) (0xf << ((x & 1) * 4))
+#define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
+// #define MASK(x) (0xf << ((x & 1) * 4))
 
 // ONLY CHANGE THESE!
 #define SLEN 25
@@ -69,10 +69,7 @@ void randomize_string(unsigned char *ptr, int rpi)
 {
 	int ri, r;
 	char rw;
-	struct timeval ct;
-	gettimeofday(&ct, NULL);
-	uint64_t rl = (uint64_t)ct.tv_usec + (uint64_t)ct.tv_sec;
-	r = (int)(rl % 2147483648ul);
+	r = rand();
 	ri = r % SLEN;
 	rw = cl[r % CLEN];
 	ptr[ri] = rw;
@@ -110,7 +107,6 @@ void *thread(void *m)
 	{
 		ac = 0;
 		randomize_string(str, 1);
-
 		SHA512((unsigned char*)&str, SLEN, (unsigned char*)&digest);
 
         for(i = 0; i < DIFF; i++)
