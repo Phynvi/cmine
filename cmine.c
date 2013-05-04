@@ -26,7 +26,8 @@
 
 #define CLEN 62
 #define CHR(x) cl[x % CLEN]
-#define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
+// #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
+#define MASK(x) (0xf << ((x & 1) * 8))
 
 // ONLY CHANGE THESE!
 #define SLEN 25
@@ -68,7 +69,9 @@ void randomize_string(unsigned char *ptr, int rpi)
 {
 	int ri, r;
 	char rw;
-	r = rand();
+	struct timeval ct;
+	uint64_t rl = (uint64_t)ct.tv_usec + (uint64_t)ct.tv_sec;
+	r = (int)(rl % 2147483648ul);
 	ri = r % SLEN;
 	rw = cl[r % CLEN];
 	ptr[ri] = rw;
@@ -115,7 +118,7 @@ void *thread(void *m)
         	// this is a hack to check for zeroes by looking
         	// at the bits directly, this is much faster than
         	// strncmp and sprintf :D
-        } 
+        }
 
         if(ac == 0)
         {
