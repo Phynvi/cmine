@@ -32,6 +32,8 @@
 #define DEFAULT_FILE_NAME "hashes.blc"
 // The default filename if one isn't specified via the command line
 
+#define WELCOME_MESSAGE "CMine 0.01"
+
 // STOP CHANGING NOW
 
 #define CHARARRAY_LENGTH 62

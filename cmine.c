@@ -187,6 +187,7 @@ int main(int argc, char **argv)
 #ifdef MULTITHREADING
 	pthread_t threads[THREAD_COUNT];
 #endif
+	puts(WELCOME_MESSAGE);
 	processCLArguments(argc, argv);
 
 	gettimeofday(&currentTime, NULL);
