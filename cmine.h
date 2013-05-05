@@ -34,10 +34,12 @@
 
 // STOP CHANGING NOW
 
-#define CLEN 62
+#define CHARARRAY_LENGTH 62
 #define CHR(x) characterList[x % CLEN]
 #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
 // #define MASK(x) (0xf << ((x & 1) * 4))
+
+char characterList[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 // Initializess a string to all random values.
 void initializeString(unsigned char *ptr);

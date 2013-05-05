@@ -26,7 +26,6 @@
 
 #include "cmine.h"
 
-char characterList[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
 
@@ -36,7 +35,7 @@ void initializeString(unsigned char *ptr)
 	char chr;
 	for(i = 0; i < STRING_LENGTH; i++)
 	{
-		chr = characterList[rand() % CLEN];
+		chr = characterList[rand() % CHARARRAY_LENGTH];
 		ptr[i] = chr;
 	}
 }
@@ -49,7 +48,7 @@ void randomizeString(unsigned char *ptr, int times)
 	{
 		randNum = rand();
 		replaceIndex = randNum % STRING_LENGTH;
-		chr = characterList[randNum % CLEN];
+		chr = characterList[randNum % CHARARRAY_LENGTH];
 		ptr[replaceIndex] = chr;
 	}
 }
@@ -129,9 +128,9 @@ int main(void)
 {
 	struct timeval currentTime;
 	int threadId;
-#ifdef MULTI
-	pthread_t threads[THREADC];
-	int threadReturnValues[THREADC];
+#ifdef MULTITHREADING
+	pthread_t threads[THREAD_COUNT];
+	int threadReturnValues[THREAD_COUNT];
 #endif
 
 	gettimeofday(&currentTime, NULL);
@@ -142,18 +141,18 @@ int main(void)
 
 	srand(currentTime.tv_sec);
 
-#ifdef MULTI
-	for(threadId = 0; threadId < THREADC; threadId++)
+#ifdef MULTITHREADING
+	for(threadId = 0; threadId < THREAD_COUNT; threadId++)
 	{
 		threadReturnValues[threadId] = pthread_create(&threads[threadId], NULL, threadId, (void*)&threadId);
 	}
 
-	for(threadId = 0; threadId < THREADC; threadId++)
+	for(threadId = 0; threadId < THREAD_COUNT; threadId++)
 	{
 		pthread_join(threads[threadId], NULL);
 	}
 #endif
-#ifndef MULTI
+#ifndef MULTITHREADING
 	// if we're in single thread mode, just run the thread function directly
 	threadId = -1;
 	thread((void*)&threadId);
