@@ -67,7 +67,7 @@ void initializeString(unsigned char *ptr)
 // Only calls rand() once for maximum speed
 void randomizeString(unsigned char *ptr, int times)
 {
-	int replaceIndex, randNum, replaceIndex;
+	int replaceIndex, randNum, i;
 	char chr;
 	for(i = 0; i < times; i++)
 	{
@@ -155,10 +155,10 @@ void printHexString(char *cp, int n)
 int main(void)
 {
 	struct timeval currentTime;
+	int threadId;
 #ifdef MULTI
 	pthread_t threads[THREADC];
 	int threadReturnValues[THREADC];
-	int thread;
 #endif
 
 	gettimeofday(&currentTime, NULL);
@@ -170,20 +170,20 @@ int main(void)
 	srand(currentTime.tv_sec);
 
 #ifdef MULTI
-	for(thread = 0; thread < THREADC; thread++)
+	for(threadId = 0; threadId < THREADC; threadId++)
 	{
-		threadReturnValues[thread] = pthread_create(&threads[thread], NULL, thread, (void*)&thread);
+		threadReturnValues[threadId] = pthread_create(&threads[threadId], NULL, threadId, (void*)&threadId);
 	}
 
-	for(thread = 0; thread < THREADC; thread++)
+	for(threadId = 0; threadId < THREADC; threadId++)
 	{
-		pthread_join(threads[thread], NULL);
+		pthread_join(threads[threadId], NULL);
 	}
 #endif
 #ifndef MULTI
 	// if we're in single thread mode, just run the thread function directly
-	thread = -1;
-	thread((void*)&thread);
+	threadId = -1;
+	thread((void*)&threadId);
 #endif
 	return 0;
 }
