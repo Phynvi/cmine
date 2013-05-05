@@ -28,6 +28,8 @@
 
 int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
+char *filename = DEFAULT_FILE_NAME;
+int difficulty = -1;
 
 void initializeString(unsigned char *ptr)
 {
@@ -85,7 +87,7 @@ void *thread(void *tid)
 		randomizeString(str, 1);
 		SHA512((unsigned char*)&str, STRING_LENGTH, (unsigned char*)&digest);
 
-        for(i = 0; i < DIFFICULTY_LEVEL; i++)
+        for(i = 0; i < difficulty; i++)
 		{
         	accumulator |= (digest[i / 2] & MASK(i));
         	// this is a hack to check for zeroes by looking
@@ -103,7 +105,7 @@ void *thread(void *tid)
         		printf("MT%d: check %s %s\n", threadId, str, md_str);
         	else
         		printf("M: check %s %s\n", str, md_str);
-        	fi = fopen("hashes.blc", "a");
+        	fi = fopen(filename, "a");
         	fprintf(fi, "check %s %s\n", str, md_str);
         	fclose(fi);
         	successfulHashes++;
@@ -124,13 +126,68 @@ void printHexString(char *cp, int n)
 	printf("\n");
 }
 
-int main(void)
+void printHelpString(void)
+{
+	puts("cmine [FLAG1 [FLAG2 ... [FLAGn] ] ] [PATH]");
+	puts("PATH: The path to the file to which mined coins will be saved");
+	puts("Available flags:");
+	puts("-d X | --difficulty X: The current difficulty of the server");
+	puts("-h --help: Shows this help message");
+}
+
+void processCLArguments(int argc, char **argv)
+{
+	int i;
+	for(i = 1; i < argc; i++)
+	{
+		if(stringStartsWith(argv[i], "-h") || stringStartsWith(argv[i], "--help"))
+		{
+			printHelpString();
+			exit(0);
+		}
+		else if(stringStartsWith(argv[i], "-d") || stringStartsWith(argv[i], "--difficulty"))
+		{
+			i++;
+			if(i == argc)
+			{
+				printf("Error: No argument following -d, exiting.\n");
+				exit(-1);
+			}
+			difficulty = (int)(strtol(argv[i], NULL, 10) & 0x7fffffff);
+			printf("Difficulty set to %d\n", difficulty);
+		}
+		else
+		{
+			filename = argv[i];
+			printf("Filename set to %s\n", filename);
+		}
+	}
+	if(difficulty == -1)
+	{
+		printf("Error: No difficulty specified, exiting.\n");
+		printf("Note: If you need help, specify the flag -h\n");
+		exit(-1);
+	}
+	if(strcmp(filename, DEFAULT_FILE_NAME) == 0)
+	{
+		printf("No filename specified, defaulting to %s.\n", DEFAULT_FILE_NAME);
+	}
+}
+
+int stringStartsWith(char *str, char *prefix)
+{
+	if(strlen(str) > strlen(prefix)) return 0;
+	return strncmp(str, prefix, strlen(prefix)) == 0;
+}
+
+int main(int argc, char **argv)
 {
 	struct timeval currentTime;
 	int threadId;
 #ifdef MULTITHREADING
 	pthread_t threads[THREAD_COUNT];
 #endif
+	processCLArguments(argc, argv);
 
 	gettimeofday(&currentTime, NULL);
 	time_st = currentTime.tv_sec;

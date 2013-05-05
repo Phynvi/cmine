@@ -20,9 +20,6 @@
 #define STRING_LENGTH 25
 // This defines the string length to try and hash, 25-35 seems to be a sweet spot
 
-#define DIFFICULTY_LEVEL 7
-// This is the difficulty level
-
 #define MULTITHREADING
 // Comment the above line out to use single-threaded mode
 
@@ -31,6 +28,9 @@
 // this, and it stops going up at all really on my box, so if you want more
 // than 2 threads you'll have to experiment yourself or run more than one
 // process, which is what I do
+
+#define DEFAULT_FILE_NAME "hashes.blc"
+// The default filename if one isn't specified via the command line
 
 // STOP CHANGING NOW
 
@@ -61,5 +61,14 @@ void *thread(void *tid);
 // (unused) print a char array of length n as hex.
 void printHexString(char *cp, int n);
 
+// Prints the command line flag help.
+void printHelpString(void);
+
+// Process command-line arguments passed to the executable.
+void processCLArguments(int argc, char **argv);
+
+// Determines whether a given string starts with a prefix.
+int stringStartsWith(char *str, char *prefix);
+
 // Huuuuueee I wonder what this one does?
-int main(void);
+int main(int argc, char **argv);
