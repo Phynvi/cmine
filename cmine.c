@@ -17,41 +17,19 @@
 #define __STDC_FORMAT_MACROS
 #include <stdio.h>
 #include <stdlib.h>
-#include <openssl/sha.h>
-#include <sys/time.h>
 #include <inttypes.h>
 #include <string.h>
 #include <signal.h>
+#include <sys/time.h>
 #include <pthread.h>
+#include <openssl/sha.h>
 
-#define CLEN 62
-#define CHR(x) characterList[x % CLEN]
-#define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
-// #define MASK(x) (0xf << ((x & 1) * 4))
-
-// ONLY CHANGE THESE!
-#define STRING_LENGTH 25
-// This defines the string length to try and hash, 25-35 seems to be a sweet spot
-
-#define DIFFICULTY_LEVEL 7
-// This is the difficulty level
-
-#define MULTITHREADING
-// Comment the above line out to use single-threaded mode
-
-#define THREAD_COUNT 2
-// The number of threads to use. The hash/s doesn't increase linearly with
-// this, and it stops going up at all really on my box, so if you want more
-// than 2 threads you'll have to experiment yourself or run more than one
-// process, which is what I do
-
-// STOP CHANGING NOW
+#include "cmine.h"
 
 char characterList[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
 
-// Initializess a string to all random values
 void initializeString(unsigned char *ptr)
 {
 	int i;
@@ -63,8 +41,6 @@ void initializeString(unsigned char *ptr)
 	}
 }
 
-// Changes x characters in the string to a random value
-// Only calls rand() once for maximum speed
 void randomizeString(unsigned char *ptr, int times)
 {
 	int replaceIndex, randNum, i;
@@ -78,7 +54,6 @@ void randomizeString(unsigned char *ptr, int times)
 	}
 }
 
-// Prints the status report at the end
 void finalize(void)
 {
 	struct timeval currentTime;
@@ -89,9 +64,7 @@ void finalize(void)
 		timeElapsed, hashes / timeElapsed, timeElapsed / (successfulHashes == 0 ? 1 : successfulHashes));
 }
 
-// I don't like using signal() but this code isn't designed
-// for cleanliness or safety so whatever
-void sig(int sig)
+void sigintHandler(int sig)
 {
 	running = 0;
 }
@@ -165,7 +138,7 @@ int main(void)
 	time_st = currentTime.tv_sec;
 
 	atexit(finalize);
-	signal(SIGINT, sig);
+	signal(SIGINT, sigintHandler);
 
 	srand(currentTime.tv_sec);
 
