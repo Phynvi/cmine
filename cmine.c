@@ -25,21 +25,21 @@
 #include <pthread.h>
 
 #define CLEN 62
-#define CHR(x) cl[x % CLEN]
+#define CHR(x) characterList[x % CLEN]
 #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
 // #define MASK(x) (0xf << ((x & 1) * 4))
 
 // ONLY CHANGE THESE!
-#define SLEN 25
+#define STRING_LENGTH 25
 // This defines the string length to try and hash, 25-35 seems to be a sweet spot
 
-#define DIFF 7
+#define DIFFICULTY_LEVEL 7
 // This is the difficulty level
 
-#define MULTI
+#define MULTITHREADING
 // Comment the above line out to use single-threaded mode
 
-#define THREADC 2
+#define THREAD_COUNT 2
 // The number of threads to use. The hash/s doesn't increase linearly with
 // this, and it stops going up at all really on my box, so if you want more
 // than 2 threads you'll have to experiment yourself or run more than one
@@ -47,42 +47,46 @@
 
 // STOP CHANGING NOW
 
-char cl[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+char characterList[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 int time_st, running = 1;
-uint64_t hashes = 0, shashes = 0;
+uint64_t hashes = 0, successfulHashes = 0;
 
 // Initializess a string to all random values
-void init_string(unsigned char *ptr)
+void initializeString(unsigned char *ptr)
 {
 	int i;
-	char rw;
-	for(i = 0; i < SLEN; i++)
+	char chr;
+	for(i = 0; i < STRING_LENGTH; i++)
 	{
-		rw = cl[rand() % CLEN];
-		ptr[i] = rw;
+		chr = characterList[rand() % CLEN];
+		ptr[i] = chr;
 	}
 }
 
-// Changes one character in the string to a random value
+// Changes x characters in the string to a random value
 // Only calls rand() once for maximum speed
-void randomize_string(unsigned char *ptr, int rpi)
+void randomizeString(unsigned char *ptr, int times)
 {
-	int ri, r;
-	char rw;
-	r = rand();
-	ri = r % SLEN;
-	rw = cl[r % CLEN];
-	ptr[ri] = rw;
+	int replaceIndex, randNum, replaceIndex;
+	char chr;
+	for(i = 0; i < times; i++)
+	{
+		randNum = rand();
+		replaceIndex = randNum % STRING_LENGTH;
+		chr = characterList[randNum % CLEN];
+		ptr[replaceIndex] = chr;
+	}
 }
 
 // Prints the status report at the end
 void finalize(void)
 {
-	struct timeval ct;
-	int tts;
-	gettimeofday(&ct, NULL);
-	tts = ct.tv_sec - time_st;
-	printf("Totalled %"PRIu64" hashes in %d seconds (%"PRIu64" h/s, %"PRIu64" s/coin)\n", hashes, tts, hashes / tts, tts / (shashes == 0 ? 1 : shashes));
+	struct timeval currentTime;
+	int timeElapsed;
+	gettimeofday(&currentTime, NULL);
+	timeElapsed = currentTime.tv_sec - time_st;
+	printf("Totalled %"PRIu64" hashes in %d seconds (%"PRIu64" h/s, %"PRIu64" s/coin)\n", hashes,
+		timeElapsed, hashes / timeElapsed, timeElapsed / (successfulHashes == 0 ? 1 : successfulHashes));
 }
 
 // I don't like using signal() but this code isn't designed
@@ -92,84 +96,94 @@ void sig(int sig)
 	running = 0;
 }
 
-void *thread(void *m)
+void *thread(void *tid)
 {
-	unsigned char str[SLEN + 1], digest[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
+	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
 	FILE *fi;
-	int i, ac, tn = *((int*)m);
-	init_string(str);
-	str[SLEN] = '\0';
-	if(tn != -1)
-		printf("Starting miner thread %d with %s...\n", tn, str);
+	int i, accumulator, threadId = *((int*)tid);
+	initializeString(str);
+	str[STRING_LENGTH] = '\0';
+	if(threadId != -1)
+		printf("Starting miner thread %d with %s...\n", threadId, str);
 	else
 		printf("Starting miner with %s...\n", str);
 	while(running)
 	{
-		ac = 0;
-		randomize_string(str, 1);
-		SHA512((unsigned char*)&str, SLEN, (unsigned char*)&digest);
+		accumulator = 0;
+		randomizeString(str, 1);
+		SHA512((unsigned char*)&str, STRING_LENGTH, (unsigned char*)&digest);
 
-        for(i = 0; i < DIFF; i++)
+        for(i = 0; i < DIFFICULTY_LEVEL; i++)
 		{
-        	ac |= (digest[i / 2] & MASK(i));
+        	accumulator |= (digest[i / 2] & MASK(i));
         	// this is a hack to check for zeroes by looking
         	// at the bits directly, this is much faster than
         	// strncmp and sprintf :D
         }
 
-        if(ac == 0)
+        if(accumulator == 0)
         {
         	for(i = 0; i < SHA512_DIGEST_LENGTH; i++)
 			{
 	        	sprintf((char*)&md_str[i*2], "%02x", (unsigned int)digest[i]);
 	        }
-			if(tn != -1)
-        		printf("MT%d: check %s %s\n", tn, str, md_str);
+			if(threadId != -1)
+        		printf("MT%d: check %s %s\n", threadId, str, md_str);
         	else
         		printf("M: check %s %s\n", str, md_str);
         	fi = fopen("hashes.blc", "a");
         	fprintf(fi, "check %s %s\n", str, md_str);
         	fclose(fi);
-        	shashes++;
+        	successfulHashes++;
         }
         hashes++;
 	}
-	printf("Stopping thread %d...\n", tn);
+	printf("Stopping thread %d...\n", threadId);
 	return NULL;
+}
+
+void printHexString(char *cp, int n)
+{
+	int i;
+	for(i = 0; i < n; i++)
+	{
+		printf("%02x", cp[i] & 0xff);
+	}
+	printf("\n");
 }
 
 int main(void)
 {
-	struct timeval ct;
+	struct timeval currentTime;
 #ifdef MULTI
 	pthread_t threads[THREADC];
-	int thread_rets[THREADC];
+	int threadReturnValues[THREADC];
+	int thread;
 #endif
-	int thr;
 
-	gettimeofday(&ct, NULL);
-	time_st = ct.tv_sec;
+	gettimeofday(&currentTime, NULL);
+	time_st = currentTime.tv_sec;
 
 	atexit(finalize);
 	signal(SIGINT, sig);
 
-	srand(ct.tv_sec);
+	srand(currentTime.tv_sec);
 
 #ifdef MULTI
-	for(thr = 0; thr < THREADC; thr++)
+	for(thread = 0; thread < THREADC; thread++)
 	{
-		thread_rets[thr] = pthread_create(&threads[thr], NULL, thread, (void*)&thr);
+		threadReturnValues[thread] = pthread_create(&threads[thread], NULL, thread, (void*)&thread);
 	}
 
-	for(thr = 0; thr < THREADC; thr++)
+	for(thread = 0; thread < THREADC; thread++)
 	{
-		pthread_join(threads[thr], NULL);
+		pthread_join(threads[thread], NULL);
 	}
 #endif
 #ifndef MULTI
 	// if we're in single thread mode, just run the thread function directly
-	int tn = -1;
-	thread((void*)&tn);
+	thread = -1;
+	thread((void*)&thread);
 #endif
 	return 0;
 }
