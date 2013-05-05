@@ -29,6 +29,7 @@
 int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
 char *filename = DEFAULT_FILE_NAME;
+char *logFormat = DEFAULT_LOG_FORMAT;
 int difficulty = -1;
 
 void initializeString(unsigned char *ptr)
@@ -102,11 +103,11 @@ void *thread(void *tid)
 	        	sprintf((char*)&md_str[i*2], "%02x", (unsigned int)digest[i]);
 	        }
 			if(threadId != -1)
-        		printf("MT%d: check %s %s\n", threadId, str, md_str);
+        		printf("MT%d: Valid: %s\n", threadId, str);
         	else
-        		printf("M: check %s %s\n", str, md_str);
+        		printf("M: Valid: %s\n", str);
         	fi = fopen(filename, "a");
-        	fprintf(fi, "check %s %s\n", str, md_str);
+        	fprintf(fi, logFormat, str, md_str);
         	fclose(fi);
         	successfulHashes++;
         }
@@ -132,6 +133,7 @@ void printHelpString(void)
 	puts("PATH: The path to the file to which mined coins will be saved");
 	puts("Available flags:");
 	puts("-d X | --difficulty X: The current difficulty of the server");
+	puts("-f X | --format X: The fprintf format to log coins with");
 	puts("-h --help: Shows this help message");
 }
 
@@ -140,21 +142,32 @@ void processCLArguments(int argc, char **argv)
 	int i;
 	for(i = 1; i < argc; i++)
 	{
-		if(stringStartsWith(argv[i], "-h") || stringStartsWith(argv[i], "--help"))
+		if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help"))
 		{
 			printHelpString();
 			exit(0);
 		}
-		else if(stringStartsWith(argv[i], "-d") || stringStartsWith(argv[i], "--difficulty"))
+		else if(strcmp(argv[i], "-d") || strcmp(argv[i], "--difficulty"))
 		{
 			i++;
 			if(i == argc)
 			{
-				printf("Error: No argument following -d, exiting.\n");
+				printf("Error: No argument following %s, exiting.\n", argv[i - 1]);
 				exit(-1);
 			}
 			difficulty = (int)(strtol(argv[i], NULL, 10) & 0x7fffffff);
 			printf("Difficulty set to %d\n", difficulty);
+		}
+		else if(strcmp(argv[i], "-f") || strcmp(argv[i], "--format"))
+		{
+			i++;
+			if(i == argc)
+			{
+				printf("Error: No argument following %s, exiting.\n", argv[i - 1]);
+				exit(-1);
+			}
+			logFormat = argv[i];
+			printf("Log format set to %s\n", logFormat);
 		}
 		else
 		{

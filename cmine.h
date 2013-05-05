@@ -32,7 +32,11 @@
 #define DEFAULT_FILE_NAME "hashes.blc"
 // The default filename if one isn't specified via the command line
 
+#define DEFAULT_LOG_FORMAT "check %s %s\n"
+// The default printf-style log format to write to a file
+
 #define WELCOME_MESSAGE "CMine 0.01"
+// The welcome message to print upon execution of the program
 
 // STOP CHANGING NOW
 
