@@ -130,7 +130,6 @@ int main(void)
 	int threadId;
 #ifdef MULTITHREADING
 	pthread_t threads[THREAD_COUNT];
-	int threadReturnValues[THREAD_COUNT];
 #endif
 
 	gettimeofday(&currentTime, NULL);
@@ -144,7 +143,7 @@ int main(void)
 #ifdef MULTITHREADING
 	for(threadId = 0; threadId < THREAD_COUNT; threadId++)
 	{
-		threadReturnValues[threadId] = pthread_create(&threads[threadId], NULL, threadId, (void*)&threadId);
+		pthread_create(&threads[threadId], NULL, thread, (void*)&threadId);
 	}
 
 	for(threadId = 0; threadId < THREAD_COUNT; threadId++)
