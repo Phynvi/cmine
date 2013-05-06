@@ -142,12 +142,12 @@ void processCLArguments(int argc, char **argv)
 	int i;
 	for(i = 1; i < argc; i++)
 	{
-		if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help"))
+		if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
 		{
 			printHelpString();
 			exit(0);
 		}
-		else if(strcmp(argv[i], "-d") || strcmp(argv[i], "--difficulty"))
+		else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--difficulty") == 0)
 		{
 			i++;
 			if(i == argc)
@@ -158,7 +158,7 @@ void processCLArguments(int argc, char **argv)
 			difficulty = (int)(strtol(argv[i], NULL, 10) & 0x7fffffff);
 			printf("Difficulty set to %d\n", difficulty);
 		}
-		else if(strcmp(argv[i], "-f") || strcmp(argv[i], "--format"))
+		else if(strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--format") == 0)
 		{
 			i++;
 			if(i == argc)
