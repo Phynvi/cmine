@@ -8,7 +8,7 @@ I have some goals for this program. It's a mostly personal project and I intend 
 
 program
 -------
-This program is intended for speed, that's why it's so lightweight and written in C. At the time of writing, this program can achieve about 1.2MHash/s with the default settings (string length 25, 2 threads), and I'm still trying to optimize it further. I hope for this miner to be recognized for raw speed, not features, so please refrain from bloating the main loop of the program with anything that will reduce its speed.
+This program is intended for speed, that's why it's so lightweight and written in C. At the time of writing, this program can achieve about 2.1MHash/s with the default settings (string length 25, 2 threads) on an Intel Core 2 Quad @2.33GHz per process, and I'm still trying to optimize it further. I hope for this miner to be recognized for raw speed, not features, so please refrain from bloating the main loop of the program with anything that will reduce its speed.
 
 development
 -----------
