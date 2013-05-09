@@ -20,6 +20,9 @@
 #define STRING_LENGTH 25
 // This defines the string length to try and hash, 25-35 seems to be a sweet spot
 
+#define MULTITHREADING
+// Comment the above line out to use single-threaded mode
+
 #define DEFAULT_FILE_NAME "hashes.blc"
 // The default filename if one isn't specified via the command line
 
