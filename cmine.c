@@ -106,7 +106,7 @@ void *thread(void *tid)
 	        	sprintf((char*)&md_str[i*2], "%02x", (unsigned int)digest[i]);
 	        }
 			if(threadCount > 1)
-        		printf("MT%d: #%"PRIu64" Valid: %s\n", i, successfulHashes, str);
+        		printf("MT: #%"PRIu64" Valid: %s\n", successfulHashes, str);
         	else
         		printf("M: #%"PRIu64" Valid: %s\n", successfulHashes, str);
         	fi = fopen(filename, "a");
