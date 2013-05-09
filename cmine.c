@@ -78,6 +78,9 @@ void *thread(void *tid)
 	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
 	FILE *fi;
 	int i, accumulator;
+#ifdef REUSE_CONTEXT
+	SHA512_CTX *context = malloc(sizeof(SHA512_CTX));
+#endif
 	initializeString(str);
 	str[STRING_LENGTH] = '\0';
 	if(threadCount > 1)
@@ -88,7 +91,13 @@ void *thread(void *tid)
 	{
 		accumulator = 0;
 		randomizeString(str, 1);
+#ifdef REUSE_CONTEXT
+		SHA512_Init(context);
+		SHA512_Update(context, (unsigned char*)&str, STRING_LENGTH);
+		SHA512_Final((unsigned char*)&digest, context);
+#else
 		SHA512((unsigned char*)&str, STRING_LENGTH, (unsigned char*)&digest);
+#endif
 
         for(i = 0; i < difficulty; i++)
 		{
@@ -116,6 +125,7 @@ void *thread(void *tid)
         hashes++;
 	}
 	printf("Stopping thread %d...\n", i);
+	free(context);
 	return NULL;
 }
 

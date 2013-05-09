@@ -17,3 +17,7 @@ I never intended this to become a public thing, therefore the code is quite mess
 versioning
 ---------
 The versioning system for CMine is a.bbc, where a is the major version, b is the minor version and c is the revision. The major version is only incremented when a huge feature update has happened, or the program has been majorly rewritten. The minor version is for individual stable features or feature sets. The revision is omitted unless a mistake with the previous release was made, in which case the letters a-z are used to signify rereleases. This is all subject to change.
+
+settings
+========
+The way you set up and run this program can have a significant effect on the speed of the mining. I have found, for me, that the ideal configuration is to have 2 threads per process, and run (cores/2) processes. This maximizes speed while minimizing the number of processes running. I am currently working on an alternate method for this, as POSIX threads don't seem to work quite right - 

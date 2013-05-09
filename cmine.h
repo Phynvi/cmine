@@ -32,6 +32,9 @@
 #define WELCOME_MESSAGE "CMine 0.01"
 // The welcome message to print upon execution of the program
 
+// #define REUSE_CONTEXT
+// Reuse a SHA512_CTX rather than using the SHA512() helper function every time (experimental)
+
 // STOP CHANGING NOW
 
 #define CHARARRAY_LENGTH 62
