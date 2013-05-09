@@ -12,7 +12,7 @@ This program is intended for speed, that's why it's so lightweight and written i
 
 development
 -----------
-I never intended this to become a public thing, therefore the code is quite messy, it probably isn't very portable and it could be a lot better. At the moment I'm completely inept at Github, so please excuse me if I trip up or make a stupid mistake. At this stage, all suggestions and contributions are welcomed.
+I never intended this to become a public thing, therefore the code probably isn't very portable and it could be a lot better in that respect. At the moment I'm a little inept at Github, so please excuse me if I trip up or make a stupid mistake. At this stage, all suggestions and contributions are welcomed.
 
 versioning
 ---------
