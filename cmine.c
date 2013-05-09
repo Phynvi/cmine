@@ -98,18 +98,18 @@ void *thread(void *tid)
 
         if(accumulator == 0)
         {
+        	successfulHashes++;
         	for(i = 0; i < SHA512_DIGEST_LENGTH; i++)
 			{
 	        	sprintf((char*)&md_str[i*2], "%02x", (unsigned int)digest[i]);
 	        }
 			if(threadId != -1)
-        		printf("MT%d: Valid: %s\n", threadId, str);
+        		printf("MT%d: #%"PRIu64" Valid: %s\n", threadId, successfulHashes, str);
         	else
-        		printf("M: Valid: %s\n", str);
+        		printf("M: #%"PRIu64" Valid: %s\n", successfulHashes, str);
         	fi = fopen(filename, "a");
         	fprintf(fi, logFormat, str, md_str);
         	fclose(fi);
-        	successfulHashes++;
         }
         hashes++;
 	}

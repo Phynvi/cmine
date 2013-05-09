@@ -27,7 +27,7 @@
 // The number of threads to use. The hash/s doesn't increase linearly with
 // this, and it stops going up at all really on my box, so if you want more
 // than 2 threads you'll have to experiment yourself or run more than one
-// process, which is what I do
+// process, which is what I do. This is the sweet spot but yours may differ
 
 #define DEFAULT_FILE_NAME "hashes.blc"
 // The default filename if one isn't specified via the command line
