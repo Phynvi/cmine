@@ -13,7 +13,6 @@
 
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 #define __STDC_FORMAT_MACROS
 #include <stdio.h>
 #include <stdlib.h>
@@ -125,7 +124,9 @@ void *thread(void *tid)
         hashes++;
 	}
 	printf("Stopping thread %d...\n", i);
-	free(context);
+#ifdef REUSE_CONTEXT
+    free(context);
+#endif
 	return NULL;
 }
 

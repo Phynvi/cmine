@@ -19,7 +19,7 @@
 # build environment.
 
 CXX = gcc
-CXXFLAGS = -Wall -Ofast 
+CXXFLAGS = -Wall 
 OBJECTS = cmine.o
 SHELL = /bin/bash
 PNAME = cmine
