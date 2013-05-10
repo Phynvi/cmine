@@ -26,10 +26,6 @@ PNAME = cmine
 INCL_DIR = -L/usr/include
 INCLUDES = -lcrypto -lpthread
 
-ifeq "$(GCCVERSIONGTEQ4)" "4.6"
-    CXXFLAGS += -Ofast
-endif
-
 cmine: clean ${OBJECTS}
 	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${PNAME} ${INCL_DIR} ${INCLUDES}
 
