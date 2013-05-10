@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Quick 'n' dirty bloocoin miner
 # Copyright (C) 2013 T. Galvin
 
