@@ -24,11 +24,11 @@ errno_ct claimHash(char *cmd, char *arg)
 	return system(syscall);
 }
 
-void performClaim(actiongroup_ct *group, unsigned char *plaintext, unsigned char *hash)
+void performClaim(actiongroup_ct *group, char *address, unsigned char *plaintext, unsigned char *hash)
 {
 	int i;
 	char arg[MAX_STR_LEN];
-	sprintf((char*)arg, "%s %s", plaintext, hash);
+	sprintf((char*)arg, "%s %s %s", address, plaintext, hash);
 	for(i = 0; i < group->count; i++)
 	{
 		claimHash(group->actions[i], arg);

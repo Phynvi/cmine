@@ -30,9 +30,11 @@ int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
 char *filename = DEFAULT_FILE_NAME;
 char *logFormat = DEFAULT_LOG_FORMAT;
+char *minerAddress = NULL;
 int threadCount = DEFAULT_THREAD_COUNT;
 int difficulty = -1;
-int difficultyChanged = 0, threadCountChanged = 0, pathChanged = 0;
+int difficultyChanged = 0, threadCountChanged = 0, logFormatChanged = 0,
+	pathChanged = 0, minerAddressChanged = 0;
 actiongroup_ct *claimActions;
 
 void initializeString(unsigned char *ptr)
@@ -123,7 +125,10 @@ void *thread(void *tid)
         	fi = fopen(filename, "a");
         	fprintf(fi, logFormat, str, md_str);
         	fclose(fi);
-        	performClaim(claimActions, str, md_str);
+        	if(minerAddress != NULL)
+        	{
+        		performClaim(claimActions, minerAddress, str, md_str);
+        	}
         }
         hashes++;
 	}
@@ -152,8 +157,10 @@ void printHelpString(void)
 	puts("-d X | --difficulty X: The current difficulty of the server");
 	puts("-t X | --thread-count X: The current number of threads to use");
 	puts("-f X | --format X: The fprintf format to log coins with");
+	puts("-a X | --address X: Specify an address to pass to any claim actions");
 	puts("-ca X | --claim-action X: Performs X with args PLAINTEXT, HASH upon mining a coin");
-	puts("The above flag can be called multiple times to perform multiple actions");
+	puts("The above flag can be called multiple times to perform multiple actions.");
+	puts("(Note that no action will be performed if no address is specified to send to)");
 	puts("-h --help: Shows this help message");
 }
 
@@ -202,6 +209,18 @@ void processCLArguments(int argc, char **argv)
 			logFormat = argv[i];
 			printf("Log format set to %s\n", logFormat);
 		}
+		else if(strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--address") == 0)
+		{
+			i++;
+			if(i == argc)
+			{
+				printf("Error: No argument following %s, exiting.\n", argv[i - 1]);
+				exit(-1);
+			}
+			minerAddress = argv[i];
+			printf("Miner address set to %s\n", minerAddress);
+			minerAddressChanged = 1;
+		}
 		else if(strcmp(argv[i], "-ca") == 0 || strcmp(argv[i], "--claim-action") == 0)
 		{
 			i++;
@@ -226,6 +245,14 @@ void processCLArguments(int argc, char **argv)
 		printf("Note: If you need help, specify the flag -h\n");
 		exit(-1);
 	}
+	if(!minerAddressChanged && claimActions->count > 0)
+	{
+		printf("Warning: No miner address specified, claim actions given won't be called.\n");
+	}
+	if(!logFormatChanged)
+	{
+		printf("No log format specified, defaulting to %s.\n", DEFAULT_LOG_FORMAT);
+	}
 	if(!pathChanged)
 	{
 		printf("No filename specified, defaulting to %s.\n", DEFAULT_FILE_NAME);
@@ -241,7 +268,7 @@ void processCLArguments(int argc, char **argv)
 	}
 	if(threadCount > 6)
 	{
-		printf("Discouraged number of threads: %d.\n", threadCount);
+		printf("Warning: Discouraged number of threads: %d.\n", threadCount);
 	}
 }
 

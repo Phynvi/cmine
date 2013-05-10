@@ -27,10 +27,10 @@ You must set the difficulty to level to the correct one provided by the server, 
 
 The **-ca** or **--claim-action** flag can be used to perform an action upon mining a coin. The arguments passed to the call are the plaintext and hash in that order. For example:
 
-    ./cmine -d 7 -ca "./check.py" coins.blc
+    ./cmine -d 7 -a c0b6bb11d1462b67b7dc6d556f9c4d180bd8ba10 -ca "./checkcoin.py" coins.blc
 
 This command would call the command:
 
-    ./check.py PLAINTEXT HASH
+    ./checkcoin.py c0b6bb11d1462b67b7dc6d556f9c4d180bd8ba10 PLAINTEXT HASH
 
-Every time a coin is mined. Note that check.py must have the execute bit enabled for it to work - a simple *chmod 777 check.py* would do the trick. This flag is quite powerful and adds a lot of functionality to cmine.
+Every time a coin is mined. Replace *c0b6bb11d1462b67b7dc6d556f9c4d180bd8ba10* with your own address, or the coins will be sent to me instead (not that I'm compaining!) Note that check.py must have the execute bit enabled for it to work - a simple *chmod 777 checkcoin.py* would do the trick. This flag is quite powerful and adds a lot of functionality to cmine.
