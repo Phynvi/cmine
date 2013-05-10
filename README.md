@@ -26,7 +26,11 @@ The way you set up and run this program can have a significant effect on the spe
 You must set the difficulty to level to the correct one provided by the server, or you may end up with less hashes (if you set it too high) or loads of invalid hashes (if you set it too low). The current difficulty level is '''7''' at the time of writing, but don't rely on that for a time-accurate number.
 
 The '''-ca''' or '''--claim-action''' flag can be used to perform an action upon mining a coin. The arguments passed to the call are the plaintext and hash in that order. For example:
+
     ./cmine -d 7 -ca "./check.py" coins.blc
+
 This command would call the command:
+
     ./check.py PLAINTEXT HASH
+
 Every time a coin is mined. Note that check.py must have the execute bit enabled for it to work - a simple ''chmod 777 check.py'' would do the trick. This flag is quite powerful and adds a lot of functionality to cmine.
