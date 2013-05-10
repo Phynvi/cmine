@@ -24,6 +24,7 @@
 #include <openssl/sha.h>
 
 #include "cmine.h"
+#include "claim.h"
 
 int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
@@ -32,6 +33,7 @@ char *logFormat = DEFAULT_LOG_FORMAT;
 int threadCount = DEFAULT_THREAD_COUNT;
 int difficulty = -1;
 int difficultyChanged = 0, threadCountChanged = 0, pathChanged = 0;
+actiongroup_ct *claimActions;
 
 void initializeString(unsigned char *ptr)
 {
@@ -63,6 +65,7 @@ void finalize(void)
 	int timeElapsed;
 	gettimeofday(&currentTime, NULL);
 	timeElapsed = currentTime.tv_sec - time_st;
+	free(claimActions);
 	printf("Totalled %"PRIu64" hashes in %d seconds (%"PRIu64" h/s, %"PRIu64" s/coin)\n", hashes,
 		timeElapsed, hashes / timeElapsed, timeElapsed / (successfulHashes == 0 ? 1 : successfulHashes));
 }
@@ -120,6 +123,7 @@ void *thread(void *tid)
         	fi = fopen(filename, "a");
         	fprintf(fi, logFormat, str, md_str);
         	fclose(fi);
+        	performClaim(claimActions, str, md_str);
         }
         hashes++;
 	}
@@ -148,6 +152,8 @@ void printHelpString(void)
 	puts("-d X | --difficulty X: The current difficulty of the server");
 	puts("-t X | --thread-count X: The current number of threads to use");
 	puts("-f X | --format X: The fprintf format to log coins with");
+	puts("-ca X | --claim-action X: Performs X with args PLAINTEXT, HASH upon mining a coin");
+	puts("The above flag can be called multiple times to perform multiple actions");
 	puts("-h --help: Shows this help message");
 }
 
@@ -195,6 +201,17 @@ void processCLArguments(int argc, char **argv)
 			}
 			logFormat = argv[i];
 			printf("Log format set to %s\n", logFormat);
+		}
+		else if(strcmp(argv[i], "-ca") == 0 || strcmp(argv[i], "--claim-action") == 0)
+		{
+			i++;
+			if(i == argc)
+			{
+				printf("Error: No argument following %s, exiting.\n", argv[i - 1]);
+				exit(-1);
+			}
+			registerAction(claimActions, argv[i]);
+			printf("Registered claim action %d as %s\n", claimActions->count, argv[i]);
 		}
 		else
 		{
@@ -252,6 +269,7 @@ void mainMultithread()
 int main(int argc, char **argv)
 {
 	struct timeval currentTime;
+	claimActions = malloc(sizeof(actiongroup_ct));
 	puts(WELCOME_MESSAGE);
 	processCLArguments(argc, argv);
 

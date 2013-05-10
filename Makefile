@@ -20,7 +20,7 @@
 
 CXX = gcc
 CXXFLAGS = -Wall -O3
-OBJECTS = cmine.o
+OBJECTS = cmine.o claim.o
 SHELL = /bin/bash
 PNAME = cmine
 INCL_DIR = -L/usr/include
