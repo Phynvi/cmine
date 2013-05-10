@@ -17,23 +17,23 @@
 #pragma once
 
 // ONLY CHANGE THESE!
-#define STRING_LENGTH 25
 // This defines the string length to try and hash, 25-35 seems to be a sweet spot
+#define STRING_LENGTH 25
 
-#define DEFAULT_FILE_NAME "hashes.blc"
 // The default filename if one isn't specified via the command line
+#define DEFAULT_FILE_NAME "hashes.blc"
 
-#define DEFAULT_LOG_FORMAT "check %s %s\n"
 // The default printf-style log format to write to a file
+#define DEFAULT_LOG_FORMAT "check %s %s\n"
 
-#define DEFAULT_THREAD_COUNT 2
 // The default number of threads to use
+#define DEFAULT_THREAD_COUNT 2
 
-#define WELCOME_MESSAGE "CMine 0.01"
 // The welcome message to print upon execution of the program
+#define WELCOME_MESSAGE "CMine 0.01"
 
-// #define REUSE_CONTEXT
 // Reuse a SHA512_CTX rather than using the SHA512() helper function every time (experimental)
+// #define REUSE_CONTEXT
 
 // STOP CHANGING NOW
 
