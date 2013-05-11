@@ -38,7 +38,6 @@
 // STOP CHANGING NOW
 
 #define CHARARRAY_LENGTH 62
-#define CHR(x) characterList[x % CLEN]
 #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
 // #define MASK(x) (0xf << ((x & 1) * 4))
 
