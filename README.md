@@ -36,4 +36,4 @@ This command would call the command:
 
     ./checkcoin.py c0b6bb11d1462b67b7dc6d556f9c4d180bd8ba10 PLAINTEXT HASH
 
-Every time a coin is mined. Replace *c0b6bb11d1462b67b7dc6d556f9c4d180bd8ba10* with your own address, or the coins will be sent to me instead (not that I'm compaining!) Note that check.py must have the execute bit enabled for it to work - a simple *chmod 777 checkcoin.py* would do the trick. This flag is quite powerful and adds a lot of functionality to cmine.
+Every time a coin is mined. Replace *c0b6bb11d1462b67b7dc6d556f9c4d180bd8ba10* with your own address, or the coins will be sent to me instead (not that I'm complaining!) Note that check.py must have the execute bit enabled for it to work - a simple *chmod 777 checkcoin.py* would do the trick. This flag is quite powerful and adds a lot of functionality to cmine.
