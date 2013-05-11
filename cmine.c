@@ -132,7 +132,7 @@ void *thread(void *tid)
         }
         hashes++;
 	}
-	printf("Stopping thread %d...\n", i);
+	printf("Stopping thread...\n");
 #ifdef REUSE_CONTEXT
     free(context);
 #endif
