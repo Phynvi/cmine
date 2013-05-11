@@ -24,7 +24,7 @@
 #include <openssl/sha.h>
 
 #include "cmine.h"
-#include "claim.h"
+#include "action.h"
 
 int time_st, running = 1;
 uint64_t hashes = 0, successfulHashes = 0;
