@@ -1,4 +1,4 @@
-// Quick 'n' dirty bloocoin miner
+// Barebones optimized bloocoin miner
 // Copyright (C) 2013 T. Galvin
 
 // This program is free software: you can redistribute it and/or modify
