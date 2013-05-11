@@ -1,3 +1,6 @@
+**Important note**: Currently there is *no support for Windows*. This miner is only supported on linux, and has unsupported functionality on Mac OSX. I don't have access to a windows install to port it onto.
+
+
 cmine
 =====
 Cmine is a barebones coin miner for the virtual currency system [bloocoin](http://bloocoin.org/). It doesn't have any functionality to connect to a server; its only job is to check for coins. It does, however, provide functionality to syscall() a path upon mining a coin, which could be used to call a script which checks the coins with the server.
