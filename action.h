@@ -21,8 +21,6 @@
 #define MAX_ACTION_IDS 256
 #define MAX_STR_LEN 384
 
-typedef unsigned int errno_ct;
-
 // Represents a group of actions to be performed at once
 typedef struct
 {
@@ -31,7 +29,7 @@ typedef struct
 } actiongroup_ct;
 
 // Claim a hash by calling a specified command
-errno_ct claimHash(char *cmd, char *arg);
+int claimHash(char *cmd, char *arg);
 
 // Performs a claim action on all registered commands in a group
 // Note: plaintext and hash are unsigned char to be the same as the
