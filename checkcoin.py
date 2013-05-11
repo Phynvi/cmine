@@ -19,10 +19,13 @@ import socket
 import json
 import string
 import sys
+import io
 
 addr = sys.argv[1]
 string = sys.argv[2]
 str_hash = sys.argv[3]
+log_format = "check %s %s"
+write_on_connect_fail = "store.blc"
 server = ("bloocoin.zapto.org", 3122)
 
 try:
@@ -37,7 +40,7 @@ try:
     else:
         print "Invalid coin: " + string
 except Exception, e:
-    print "Can't connect to server!"
-    
-
-
+	stor = open(write_on_connect_fail, "a")
+	stor.write(log_format % (string, str_hash))
+	stor.close()
+	print "Can't connect to server, logged coin to " + write_on_connect_fail
