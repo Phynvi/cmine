@@ -30,7 +30,7 @@
 #define DEFAULT_THREAD_COUNT 2
 
 // The welcome message to print upon execution of the program
-#define WELCOME_MESSAGE "CMine 0.02"
+#define WELCOME_MESSAGE "CMine 0.02\n"
 
 // Reuse a SHA512_CTX rather than using the SHA512() helper function every time (experimental)
 // #define REUSE_CONTEXT

@@ -24,9 +24,16 @@ import io
 addr = sys.argv[1]
 string = sys.argv[2]
 str_hash = sys.argv[3]
+silent = False
+if len(sys.argv) >= 5:
+	silent = True
 log_format = "check %s %s\n"
 write_on_connect_fail = "store.blc"
 server = ("server.bloocoin.org", 3122)
+
+def plog(s):
+	if not silent:
+		print s
 
 try:
     s = socket.socket()
@@ -36,11 +43,11 @@ try:
     s.close()
     data = json.loads(data)
     if data['success']:
-        print "Claimed coin: " + string
+        plog("Claimed coin: " + string)
     else:
-        print "Invalid coin: " + string
+        plog("Invalid coin: " + string)
 except Exception, e:
 	stor = open(write_on_connect_fail, "a")
 	stor.write(log_format % (string, str_hash))
 	stor.close()
-	print "Can't connect to server, logged coin to " + write_on_connect_fail
+	plog("Can't connect to server, logged coin to " + write_on_connect_fail)
