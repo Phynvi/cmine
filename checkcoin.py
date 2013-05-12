@@ -26,7 +26,7 @@ string = sys.argv[2]
 str_hash = sys.argv[3]
 log_format = "check %s %s\n"
 write_on_connect_fail = "store.blc"
-server = ("bloocoin.zapto.org", 3122)
+server = ("server.bloocoin.org", 3122)
 
 try:
     s = socket.socket()
