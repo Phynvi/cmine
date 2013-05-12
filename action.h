@@ -34,7 +34,7 @@ int claimHash(char *cmd, char *arg);
 // Performs a claim action on all registered commands in a group
 // Note: plaintext and hash are unsigned char to be the same as the
 // variables in cmine.c:thread(), str and md_str
-void performClaim(actiongroup_ct *group, char *address, unsigned char *plaintext, unsigned char *hash);
+void performClaim(actiongroup_ct *group, char *address, unsigned char *plaintext, unsigned char *hash, int silent);
 
 // Register a command to a group to call upon claiming of a hash
 void registerAction(actiongroup_ct *group, char *cmd);

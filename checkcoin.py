@@ -26,7 +26,8 @@ string = sys.argv[2]
 str_hash = sys.argv[3]
 silent = False
 if len(sys.argv) >= 5:
-	silent = True
+	if sys.argv[4] == "silent":
+		silent = True
 log_format = "check %s %s\n"
 write_on_connect_fail = "store.blc"
 server = ("server.bloocoin.org", 3122)

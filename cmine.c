@@ -138,7 +138,7 @@ void *thread(void *tid)
         	fclose(fi);
         	if(minerAddress != NULL)
         	{
-        		performClaim(claimActions, minerAddress, str, md_str);
+        		performClaim(claimActions, minerAddress, str, md_str, silent);
         	}
         }
         hashes++;
