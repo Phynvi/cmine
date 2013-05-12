@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include "action.h"
 
-errno_ct claimHash(char *cmd, char *arg)
+int claimHash(char *cmd, char *arg)
 {
 	char syscall[MAX_STR_LEN];
 	sprintf((char*)syscall, "%s %s", cmd, arg);
