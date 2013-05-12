@@ -82,7 +82,7 @@ void sigintHandler(int sig)
 
 void *thread(void *tid)
 {
-	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
+	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
 	FILE *fi;
 	int i, accumulator;
 #ifdef REUSE_CONTEXT
@@ -120,6 +120,7 @@ void *thread(void *tid)
 
         if(accumulator == 0)
         {
+        	if(memcmp(digest, digest_prev, SHA512_DIGEST_LENGTH) == 0) continue; // duplicate of the last successful hash
         	successfulHashes++;
         	for(i = 0; i < SHA512_DIGEST_LENGTH; i++)
 			{
@@ -140,6 +141,7 @@ void *thread(void *tid)
         	{
         		performClaim(claimActions, minerAddress, str, md_str, silent);
         	}
+        	memcpy(digest, digest_prev, SHA512_DIGEST_LENGTH);
         }
         hashes++;
 	}
