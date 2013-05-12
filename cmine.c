@@ -80,9 +80,19 @@ void sigintHandler(int sig)
 	running = 0;
 }
 
+void *taskThread(void *vp)
+{
+	claim_ct *c = (claim_ct*)vp;
+    performClaim(c->actions, c->addr, c->str, c->md, c->silent);
+    free(c);
+    return NULL;
+}
+
 void *thread(void *tid)
 {
 	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
+	claim_ct *claim;
+	pthread_t thread;
 	FILE *fi;
 	int i, accumulator;
 #ifdef REUSE_CONTEXT
@@ -139,7 +149,13 @@ void *thread(void *tid)
         	fclose(fi);
         	if(minerAddress != NULL)
         	{
-        		performClaim(claimActions, minerAddress, str, md_str, silent);
+        		claim = malloc(sizeof(claim_ct));
+        		claim->actions = claimActions;
+        		claim->addr = minerAddress;
+        		claim->str = (unsigned char*)str;
+        		claim->md = (unsigned char*)md_str;
+        		claim->silent = silent;
+        		pthread_create(&thread, NULL, taskThread, (void*)claim);
         	}
         	memcpy(digest, digest_prev, SHA512_DIGEST_LENGTH);
         }

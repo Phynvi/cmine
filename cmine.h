@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
+#include "action.h"
 
 // ONLY CHANGE THESE!
 // This defines the string length to try and hash, 25-35 seems to be a sweet spot
@@ -40,6 +41,16 @@
 #define CHARARRAY_LENGTH 62
 #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
 // #define MASK(x) (0xf << ((x & 1) * 4))
+
+// Represents the data that must be passed to the action thread
+typedef struct
+{
+	actiongroup_ct *actions;
+	char *addr;
+	unsigned char *str;
+	unsigned char *md;
+	int silent;
+} claim_ct;
 
 char characterList[64] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
