@@ -68,8 +68,8 @@ void finalize(void)
 	gettimeofday(&currentTime, NULL);
 	timeElapsed = currentTime.tv_sec - time_st;
 	free(claimActions);
-	printf("Totalled %"PRIu64" hashes in %d seconds (%"PRIu64" h/s, %"PRIu64" s/coin)\n", hashes,
-		timeElapsed, hashes / timeElapsed, timeElapsed / (successfulHashes == 0 ? 1 : successfulHashes));
+	printf("Totalled %"PRIu64" hashes in %d seconds (%"PRIu64" khash/s, %"PRIu64" s/coin)\n", hashes,
+		timeElapsed, (hashes / timeElapsed) / 1000, timeElapsed / (successfulHashes == 0 ? 1 : successfulHashes));
 }
 
 void sigintHandler(int sig)
