@@ -90,7 +90,8 @@ void *taskThread(void *vp)
 
 void *thread(void *tid)
 {
-	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH*2+1];
+	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH * 2 + 1];
+	unsigned char str_claim[STRING_LENGTH + 1], md_str_claim[SHA512_DIGEST_LENGTH * 2 + 1];
 	claim_ct *claim;
 	pthread_t thread;
 	FILE *fi;
@@ -149,11 +150,13 @@ void *thread(void *tid)
         	fclose(fi);
         	if(minerAddress != NULL)
         	{
+        		memcpy(str, str_claim, STRING_LENGTH + 1); // so the memory won't get changed in the meantime
+        		memcpy(md_str, md_str_claim, SHA512_DIGEST_LENGTH * 2 + 1);
         		claim = malloc(sizeof(claim_ct));
         		claim->actions = claimActions;
         		claim->addr = minerAddress;
-        		claim->str = (unsigned char*)str;
-        		claim->md = (unsigned char*)md_str;
+        		claim->str = (unsigned char*)str_claim;
+        		claim->md = (unsigned char*)md_str_claim;
         		claim->silent = silent;
         		pthread_create(&thread, NULL, taskThread, (void*)claim);
         	}
