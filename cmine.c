@@ -150,8 +150,8 @@ void *thread(void *tid)
         	fclose(fi);
         	if(minerAddress != NULL)
         	{
-        		memcpy(str, str_claim, STRING_LENGTH + 1); // so the memory won't get changed in the meantime
-        		memcpy(md_str, md_str_claim, SHA512_DIGEST_LENGTH * 2 + 1);
+        		memcpy(str_claim, str, STRING_LENGTH + 1); // so the memory won't get changed in the meantime
+        		memcpy(md_str_claim, md_str, SHA512_DIGEST_LENGTH * 2 + 1);
         		claim = malloc(sizeof(claim_ct));
         		claim->actions = claimActions;
         		claim->addr = minerAddress;
