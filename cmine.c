@@ -295,6 +295,12 @@ void processCLArguments(int argc, char **argv)
 	else if(minerAddressChanged)
 	{
 		logf("Miner address set to %s\n", minerAddress);
+		if(strcmp(minerAddress, "python") == 0)
+		{
+			logf("Warning: It looks like you forgot to put quotation marks around the -ca flag argument. ");
+			logf("If you meant to type \"python bloocoin.py\", don't forget the quotes or the program may ");
+			logf("not behave as you expect.");
+		}
 	}
 	
 	if(!logFormatChanged)

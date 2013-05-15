@@ -31,7 +31,7 @@
 #define DEFAULT_THREAD_COUNT 2
 
 // The welcome message to print upon execution of the program
-#define WELCOME_MESSAGE "CMine 0.02\n"
+#define WELCOME_MESSAGE "CMine 0.02 by Potassium\n"
 
 // Reuse a SHA512_CTX rather than using the SHA512() helper function every time (experimental)
 // #define REUSE_CONTEXT
@@ -40,7 +40,6 @@
 
 #define CHARARRAY_LENGTH 62
 #define MASK(x) ((x & 1) == 0 ? 0xf0 : 0x0f)
-// #define MASK(x) (0xf << ((x & 1) * 4))
 
 // Represents the data that must be passed to the action thread
 typedef struct
