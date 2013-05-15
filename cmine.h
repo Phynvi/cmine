@@ -31,7 +31,12 @@
 #define DEFAULT_THREAD_COUNT 2
 
 // The welcome message to print upon execution of the program
-#define WELCOME_MESSAGE "CMine 0.02 by Potassium\n"
+#define WELCOME_MESSAGE \
+"  _________ ___   _ ___  ___ \n" \
+" / ___/ __ `__ \\/ / __ \\/ _ \\\n" \
+"/ /__/ / / / / / / / / /  __/\n" \
+"\\___/_/ /_/ /_/_/_/ /_/\\___/ \n" \
+"CMine 0.02 by Potassium\n"
 
 // Reuse a SHA512_CTX rather than using the SHA512() helper function every time (experimental)
 // #define REUSE_CONTEXT
