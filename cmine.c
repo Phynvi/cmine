@@ -88,10 +88,29 @@ void *taskThread(void *vp)
     return NULL;
 }
 
+uint64_t maskFromDifficulty(int diff)
+{
+	uint64_t mask = 0;
+	int i = 0;
+	while(i <= diff * 4)
+	{
+		mask += 0xf;
+		mask <<= 4;
+		i += 4;
+	}
+	while(i < 64)
+	{
+		mask <<= 4;
+		i += 4;
+	}
+	return mask;
+}
+
 void *thread(void *tid)
 {
 	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH * 2 + 1];
 	unsigned char str_claim[STRING_LENGTH + 1], md_str_claim[SHA512_DIGEST_LENGTH * 2 + 1];
+	uint64_t *checkPtr = (uint64_t*)digest, mask = maskFromDifficulty(difficulty);
 	claim_ct *claim;
 	pthread_t thread;
 	FILE *fi;
@@ -111,7 +130,7 @@ void *thread(void *tid)
 	}
 	while(running)
 	{
-		accumulator = 0;
+		// accumulator = 0;
 		randomizeString(str, 1);
 #ifdef REUSE_CONTEXT
 		SHA512_Init(context);
@@ -121,15 +140,15 @@ void *thread(void *tid)
 		SHA512((unsigned char*)&str, STRING_LENGTH, (unsigned char*)&digest);
 #endif
 
-        for(i = 0; i < difficulty; i++)
+        /* for(i = 0; i < difficulty; i++)
 		{
         	accumulator |= (digest[i / 2] & MASK(i));
         	// this is a hack to check for zeroes by looking
         	// at the bits directly, this is much faster than
         	// strncmp and logf :D
-        }
-
-        if(accumulator == 0)
+        } 
+        if(accumulator == 0)*/
+		if((*checkPtr & mask) == 0) // temporary hack while at difficulty 8, might be faster
         {
         	if(memcmp(digest, digest_prev, SHA512_DIGEST_LENGTH) == 0) continue; // duplicate of the last successful hash
         	successfulHashes++;

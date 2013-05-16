@@ -72,6 +72,12 @@ void finalize(void);
 // for cleanliness or safety so whatever.
 void sigintHandler(int sig);
 
+// Creates a new thread for handling tasks so it doesn't block the mining thread.
+void *taskThread(void *vp);
+
+// Create a valid mask from the current difficulty level.
+uint64_t maskFromDifficulty(int diff);
+
 // Main thread function.
 void *thread(void *tid);
 
