@@ -110,7 +110,7 @@ void *thread(void *tid)
 {
 	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH * 2 + 1];
 	unsigned char str_claim[STRING_LENGTH + 1], md_str_claim[SHA512_DIGEST_LENGTH * 2 + 1];
-	uint64_t *checkPtr = (uint64_t*)digest, mask = maskFromDifficulty(difficulty);
+	uint32_t *checkPtr = (uint32_t*)digest;
 	claim_ct *claim;
 	pthread_t thread;
 	FILE *fi;
@@ -148,7 +148,7 @@ void *thread(void *tid)
         	// strncmp and logf :D
         } 
         if(accumulator == 0)*/
-		if((*checkPtr & mask) == 0) // temporary hack while at difficulty 8, might be faster
+		if(*checkPtr == 0) // temporary hack while at difficulty 8, might be faster
         {
         	if(memcmp(digest, digest_prev, SHA512_DIGEST_LENGTH) == 0) continue; // duplicate of the last successful hash
         	successfulHashes++;
