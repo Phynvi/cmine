@@ -106,15 +106,21 @@ uint64_t maskFromDifficulty(int diff)
 	return mask;
 }
 
-void *thread(void *tid)
+void *thread(void *rseed)
 {
 	unsigned char str[STRING_LENGTH + 1], digest[SHA512_DIGEST_LENGTH], digest_prev[SHA512_DIGEST_LENGTH], md_str[SHA512_DIGEST_LENGTH * 2 + 1];
-	unsigned char str_claim[STRING_LENGTH + 1], md_str_claim[SHA512_DIGEST_LENGTH * 2 + 1];
+	unsigned char str_claim[STRING_LENGTH + 1], md_str_claim[SHA512_DIGEST_LENGTH * 2 + 1]; // these are the strings passed to the claim action thread
 	uint32_t *checkPtr = (uint32_t*)digest;
 	claim_ct *claim;
 	pthread_t thread;
 	FILE *fi;
 	int i, accumulator;
+	
+	// This is for compatibility for the people porting to windows - apparently
+	// Windows needs the random to be seeded on a per-thread basis so I'm gonna
+	// see if this works
+	srand(*(int*)rseed);
+	
 #ifdef REUSE_CONTEXT
 	SHA512_CTX *context = malloc(sizeof(SHA512_CTX));
 #endif
@@ -375,10 +381,17 @@ int stringStartsWith(char *str, char *prefix)
 void mainMultithread()
 {
 	pthread_t threads[threadCount];
-	int i;
+	int i, randSeeds[threadCount];
+	
+	// Windows compatibility
 	for(i = 0; i < threadCount; i++)
 	{
-		pthread_create(&threads[i], NULL, thread, NULL);
+		randSeeds[i] = rand();
+	}
+	
+	for(i = 0; i < threadCount; i++)
+	{
+		pthread_create(&threads[i], NULL, thread, (void*)&randSeeds[i]);
 	}
 
 	for(i = 0; i < threadCount; i++)
@@ -390,6 +403,7 @@ void mainMultithread()
 int main(int argc, char **argv)
 {
 	struct timeval currentTime;
+	int randSeed;
 	claimActions = malloc(sizeof(actiongroup_ct));
 	processCLArguments(argc, argv);
 
@@ -400,6 +414,7 @@ int main(int argc, char **argv)
 	signal(SIGINT, sigintHandler);
 
 	srand(currentTime.tv_sec);
+	randSeed = rand();
 	if(threadCount > 1)
 	{
 		// If we're in multi thread mode, run mainMulithread();
@@ -408,7 +423,7 @@ int main(int argc, char **argv)
 	else
 	{
 		// if we're in single thread mode, just run the thread function directly
-		thread(NULL);
+		thread((void*)&randSeed);
 	}
 	return 0;
 }
