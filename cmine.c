@@ -83,9 +83,9 @@ void sigintHandler(int sig)
 void *taskThread(void *vp)
 {
 	claim_ct *c = (claim_ct*)vp;
-    performClaim(c->actions, c->addr, c->str, c->md, c->silent);
-    free(c);
-    return NULL;
+	performClaim(c->actions, c->addr, c->str, c->md, c->silent);
+	free(c);
+	return NULL;
 }
 
 uint64_t maskFromDifficulty(int diff)
@@ -185,7 +185,7 @@ void *thread(void *tid)
 	}
 	logf("Stopping thread...\n");
 #ifdef REUSE_CONTEXT
-    free(context);
+	free(context);
 #endif
 	return NULL;
 }
